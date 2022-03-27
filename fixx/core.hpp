@@ -4,6 +4,11 @@
 #include <type_traits>
 
 namespace fixx {
+	auto constexpr move = []<typename T>(T& t) -> T&& {
+		static_assert(!std::is_const_v<T>, "don't produce (unexpected) const&&");
+		return static_cast<T&&>(t);
+	};
+
 	template<auto t> struct Value {
 		static auto constexpr value = t;
 	
