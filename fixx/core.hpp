@@ -1,7 +1,9 @@
 #ifndef FIXX__HEADER_CORE
 #define FIXX__HEADER_CORE
 
+#include <cassert>
 #include <type_traits>
+#include <utility>
 
 namespace fixx {
 	template<typename T> concept Metaval =
@@ -11,6 +13,11 @@ namespace fixx {
 		static_assert(!std::is_const_v<T>, "don't produce (unexpected) const&&");
 		return static_cast<T&&>(t);
 	};
+
+	template<typename T> constexpr void constexpr_assert(T const& t)
+	{ std::is_constant_evaluated() && !t ? throw : assert(t); }
+	template<Metaval T> constexpr void constexpr_assert(T)
+	{ static_assert(T::value); }
 
 	template<auto t> struct Value {
 		static auto constexpr value = t;
