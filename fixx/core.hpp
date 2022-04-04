@@ -4,6 +4,9 @@
 #include <type_traits>
 
 namespace fixx {
+	template<typename T> concept Metaval =
+		std::is_empty_v<T> && std::is_trivial_v<T>;
+
 	auto constexpr move = []<typename T>(T& t) -> T&& {
 		static_assert(!std::is_const_v<T>, "don't produce (unexpected) const&&");
 		return static_cast<T&&>(t);
