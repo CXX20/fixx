@@ -36,6 +36,16 @@ namespace fixx {
 		{ return {}; }
 		template<typename U> constexpr Value<t != U::value> operator!=(U) const
 		{ return {}; }
+		template<typename U> constexpr Value<t < U::value> operator<(U) const
+		{ return {}; }
+		template<typename U> constexpr Value<(t > U::value)> operator>(U) const
+		{ return {}; }
+		template<typename U> constexpr Value<t <= U::value> operator<=(U) const
+		{ return {}; }
+		template<typename U> constexpr Value<t >= U::value> operator>=(U) const
+		{ return {}; }
+		template<typename U> constexpr Value<t <=> U::value> operator<=>(U) const
+		{ return {}; }
 	};
 	template<auto t> Value<t> constexpr value;
 	template<char... cs> constexpr auto operator""_c() {
