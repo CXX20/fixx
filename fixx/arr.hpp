@@ -1,5 +1,5 @@
-#ifndef FIXX__HEADER_ARR
-#define FIXX__HEADER_ARR
+#ifndef FIXX_HEADER_ARR
+#define FIXX_HEADER_ARR
 
 #include "core.hpp"
 

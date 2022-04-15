@@ -1,5 +1,5 @@
-#ifndef FIXX__HEADER_TUPLE
-#define FIXX__HEADER_TUPLE
+#ifndef FIXX_HEADER_TUPLE
+#define FIXX_HEADER_TUPLE
 
 #include "core.hpp"
 #include <compare>

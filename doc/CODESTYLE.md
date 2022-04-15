@@ -31,7 +31,7 @@ The underscore keeps the name at the end when sorted alphabetically, e.g. in IDE
 
 They are used instead of `#pragma once` even though each target compiler supports the less verbose option, because if the same header is included through different paths, `#pragma once` doesn't save the day. However, header guards don't care where the code comes from, so they stop redefinitions anyway.
 
-Header guards are named in the following style: `FIXX__HEADER_FILE_NAME`. Note the extra underscore applied for the same reason as in details namespaces.
+Header guards are named as `FIXX_HEADER_FILE_NAME` to keep autocompletion cleaner compared to the usual `LIB_FILE_NAME_HPP` style.
 
 ## Outdated techniques
 

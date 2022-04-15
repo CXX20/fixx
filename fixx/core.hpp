@@ -1,5 +1,5 @@
-#ifndef FIXX__HEADER_CORE
-#define FIXX__HEADER_CORE
+#ifndef FIXX_HEADER_CORE
+#define FIXX_HEADER_CORE
 
 #include <cassert>
 #include <type_traits>

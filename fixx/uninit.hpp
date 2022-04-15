@@ -1,5 +1,5 @@
-#ifndef FIXX__HEADER_UNINIT
-#define FIXX__HEADER_UNINIT
+#ifndef FIXX_HEADER_UNINIT
+#define FIXX_HEADER_UNINIT
 
 #include <memory>
 

@@ -1,5 +1,5 @@
-#ifndef FIXX__HEADER_BUF
-#define FIXX__HEADER_BUF
+#ifndef FIXX_HEADER_BUF
+#define FIXX_HEADER_BUF
 
 #include "core.hpp"
 #include <memory>
