@@ -1,5 +1,5 @@
-#ifndef FIXX__HEADER_CORE
-#define FIXX__HEADER_CORE
+#ifndef FIXX_HEADER_CORE
+#define FIXX_HEADER_CORE
 
 #include <cassert>
 #include <type_traits>
@@ -16,7 +16,7 @@ namespace fixx {
 
 	template<typename T> constexpr void constexpr_assert(T const& t)
 	{ std::is_constant_evaluated() && !t ? throw : assert(t); }
-	template<Metaval T> constexpr void constexpr_assert(T)
+	template<Metaval T> constexpr void constexpr_assert(T const&)
 	{ static_assert(T::value); }
 
 	template<auto t> struct Value {
@@ -35,6 +35,16 @@ namespace fixx {
 		template<typename U> constexpr Value<t == U::value> operator==(U) const
 		{ return {}; }
 		template<typename U> constexpr Value<t != U::value> operator!=(U) const
+		{ return {}; }
+		template<typename U> constexpr Value<t < U::value> operator<(U) const
+		{ return {}; }
+		template<typename U> constexpr Value<(t > U::value)> operator>(U) const
+		{ return {}; }
+		template<typename U> constexpr Value<t <= U::value> operator<=(U) const
+		{ return {}; }
+		template<typename U> constexpr Value<t >= U::value> operator>=(U) const
+		{ return {}; }
+		template<typename U> constexpr Value<t <=> U::value> operator<=>(U) const
 		{ return {}; }
 	};
 	template<auto t> Value<t> constexpr value;

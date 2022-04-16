@@ -1,6 +1,6 @@
 # The `fixx` C++ library codestyle
 
-This document neither is nor intended to be exhaustive. Only unusual decisions which can't be easily found out (whether themselves or their rationale) from the source code are presented here.
+This document is neither exhaustive nor intended to be. Only unusual decisions which can't be easily found out (whether themselves or their rationale) from the source code are presented here.
 
 ## Indentation
 
@@ -14,7 +14,7 @@ Library code is in the `fixx` namespace.
 
 Test code is placed in top-level unnamed namespaces to avoid ODR violations.
 
-Library implementation details are in `fixx::_feature_name` rather than a single `fixx::impl` namespace, allowing to isolate other features' details while implementing new ones. Otherwise, some unexpected name clashes would be possible:
+Library implementation details are in `fixx::_module` rather than a single `fixx::impl` namespace, isolating details of other features while implementing new ones. Otherwise, some unexpected name clashes would be possible:
 ```c++
 // feature.hpp:
 namespace fixx::impl { struct Detail {}; }
@@ -27,11 +27,15 @@ namespace fixx::impl { struct Detail {}; } // redefinition?!
 
 The underscore keeps the name at the end when sorted alphabetically, e.g. in IDE completion suggestions.
 
+## Headers extension
+
+`.hpp` is used as a slight sign of separation from C with classes and its `.h` + `.cpp` combo. Also, one of the few reasons people use `.h` is C-header compatibility, which isn't a thing anyway due to the large difference in C and C++ code.
+
 ## Header guards
 
 They are used instead of `#pragma once` even though each target compiler supports the less verbose option, because if the same header is included through different paths, `#pragma once` doesn't save the day. However, header guards don't care where the code comes from, so they stop redefinitions anyway.
 
-Header guards are named in the following style: `FIXX__HEADER_FILE_NAME`. Note the extra underscore applied for the same reason as in details namespaces.
+Header guards are named as `FIXX_HEADER_FILE_NAME` to keep autocompletion cleaner compared to the usual `LIB_FILE_NAME_HPP` style.
 
 ## Outdated techniques
 
