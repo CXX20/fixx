@@ -16,7 +16,7 @@ namespace fixx {
 
 	template<typename T> constexpr void constexpr_assert(T const& t)
 	{ std::is_constant_evaluated() && !t ? throw : assert(t); }
-	template<Metaval T> constexpr void constexpr_assert(T)
+	template<Metaval T> constexpr void constexpr_assert(T const&)
 	{ static_assert(T::value); }
 
 	template<auto t> struct Value {

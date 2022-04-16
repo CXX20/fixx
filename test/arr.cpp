@@ -1,4 +1,5 @@
 #include "../fixx/arr.hpp"
+#include "../fixx/tuple.hpp"
 
 namespace {
 	using fixx::Arr, fixx::operator""_c;
@@ -22,4 +23,9 @@ namespace {
 	static_assert(std::is_empty_v<Arr0>);
 	static_assert(Arr0::size().value == 0);
 	static_assert(Arr0{} <=> Arr0{} == std::strong_ordering::equal);
+
+	static_assert(fixx::tuple_size<Arr3>.value == 3);
+	static_assert(std::is_same_v<fixx::TupleElem<0, Arr3>, long>);
+	static_assert(std::is_same_v<fixx::TupleElem<1, Arr3>, long>);
+	static_assert(std::is_same_v<fixx::TupleElem<2, Arr3>, long>);
 }
