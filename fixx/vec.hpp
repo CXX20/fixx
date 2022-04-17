@@ -8,11 +8,14 @@ namespace fixx {
 	template<typename T, typename N = std::size_t> class Vec {
 		static_assert(std::is_trivially_destructible_v<T>);
 
-		T* arr;
+		T* arr{};
 		std::size_t len{};
-		[[no_unique_address]] N cap;
+		[[no_unique_address]] N cap{};
 
 	public:
+		template<typename M = N, typename = std::enable_if_t<!Metaval<M>>>
+		constexpr Vec()
+		{}
 		template<typename B, typename = decltype(arr = std::declval<B>().data())>
 		constexpr Vec(B&& buf)
 		: arr{std::forward<B>(buf).data()}, cap{buf.size()} {}
