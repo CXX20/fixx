@@ -45,6 +45,14 @@ Only the most interesting features are presented in this list. For exhaustivenes
 	Type& initialized = uninitialized.emplace(arg1, arg2);
 	```
 
+* [**vec**](./fixx/vec.hpp)
+
+	`fixx::Vec` is pretty different from `std::vector`: it
+	* uses an externally preallocated storage,
+		* performs no bound checking on insertions, so `for (..) vec.emplace_back(..)` is zero-cost,
+	* is both trivially constructible and destructible,
+		* stores only trivially destructible types.
+
 ## Install and test
 
 Just download the repository and use its [`/fixx/`](./fixx/) as an include directory. Testing is performed at compile time: to run tests, simpy build the `.cpp` files in [`/test/`](./test/).
