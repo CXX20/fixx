@@ -29,9 +29,9 @@ namespace {
 	}());
 
 	static_assert(std::is_same_v<
-		decltype(Vec<int>{} <=> Vec<int>{}), std::strong_ordering>);
+			decltype(Vec<int>{} <=> Vec<int>{}), std::strong_ordering>);
 	static_assert(std::is_same_v<
-		decltype(Vec<float>{} <=> Vec<float>{}), std::partial_ordering>);
+			decltype(Vec<float>{} <=> Vec<float>{}), std::partial_ordering>);
 	
 	static_assert([] {
 		fixx::Buf<float> buf1{42}, buf2{42};
