@@ -2,6 +2,7 @@
 #define FIXX_HEADER_VEC
 
 #include "core.hpp"
+#include <compare>
 #include <memory>
 
 namespace fixx {
@@ -27,6 +28,12 @@ namespace fixx {
 			if (auto p = begin(); size() == v.size())
 				for (auto&& t: v) if (*p != t) return false; else ++p;
 			return size() == v.size();
+		}
+		template<typename U = T> constexpr auto operator<=>(Vec const& v) const
+		-> decltype(std::declval<U>() <=> std::declval<U>()) {
+			if (auto p = begin(); size() == v.size())
+				for (auto&& t: v) if (*p != t) return *p <=> t; else ++p;
+			return size() <=> v.size();
 		}
 	};
 	template<typename B> Vec(B&& buf)

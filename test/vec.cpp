@@ -28,15 +28,23 @@ namespace {
 		return w.size() == 1 && w[0] == 13;
 	}());
 
+	static_assert(std::is_same_v<
+		decltype(Vec<int>{} <=> Vec<int>{}), std::strong_ordering>);
+	static_assert(std::is_same_v<
+		decltype(Vec<float>{} <=> Vec<float>{}), std::partial_ordering>);
+	
 	static_assert([] {
 		fixx::Buf<float> buf1{42}, buf2{42};
 		Vec vec{buf1};
 		vec.emplace_back(1.f), vec.emplace_back(2.f);
 		Vec copy{vec};
-		Vec other_size{buf2};
-		Vec other_elems{buf2};
-		other_elems.emplace_back(3.f), other_elems.emplace_back(4.f);
-		return vec == copy && vec != other_size && vec != other_elems;
+		Vec shorter{buf2};
+		Vec different{buf2};
+		different.emplace_back(3.f), different.emplace_back(4.f);
+		return
+			vec == copy && vec <=> copy == std::strong_ordering::equal &&
+			vec != shorter && vec <=> shorter == std::strong_ordering::greater &&
+			vec != different && vec <=> different == std::strong_ordering::less;
 	}());
 
 	struct NoCmp {};
