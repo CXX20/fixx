@@ -27,4 +27,18 @@ namespace {
 		Vec w{v};
 		return w.size() == 1 && w[0] == 13;
 	}());
+
+	static_assert([] {
+		fixx::Buf<float> buf1{42}, buf2{42};
+		Vec vec{buf1};
+		vec.emplace_back(1.f), vec.emplace_back(2.f);
+		Vec copy{vec};
+		Vec other_size{buf2};
+		Vec other_elems{buf2};
+		other_elems.emplace_back(3.f), other_elems.emplace_back(4.f);
+		return vec == copy && vec != other_size && vec != other_elems;
+	}());
+
+	struct NoCmp {};
+	static_assert(!Vec<NoCmp>{}.size(), "Vec comparison must be SFINAE-friendly");
 }

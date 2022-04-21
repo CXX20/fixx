@@ -22,6 +22,12 @@ namespace fixx {
 		{ return constexpr_assert(i < size()), from[i]; }
 		template<typename... As> constexpr auto& emplace_back(As&&... args) &
 		{ return std::construct_at(to, std::forward<As>(args)...), *to++; }
+		template<typename U = T> constexpr auto operator==(Vec const& v) const
+		-> decltype(std::declval<U>() == std::declval<U>()) {
+			if (auto p = begin(); size() == v.size())
+				for (auto& t: v) if (*p != t) return false; else ++p;
+			return size() == v.size();
+		}
 	};
 	template<typename B> Vec(B&& buf)
 	-> Vec<std::remove_pointer_t<decltype(buf.data())>>;
