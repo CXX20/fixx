@@ -12,8 +12,7 @@ namespace fixx {
 
 	public:
 		constexpr Vec() {}
-		template<typename B, typename = decltype(from = std::declval<B>().data())>
-		constexpr Vec(B&& buf)
+		template<typename B> constexpr Vec(B&& buf, decltype(buf.data()) = nullptr)
 		: from{std::forward<B>(buf).data()}, to{from} {}
 
 		constexpr auto begin() const { return from; }
