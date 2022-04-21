@@ -19,7 +19,7 @@ namespace fixx {
 		constexpr auto begin() const { return from; }
 		constexpr auto end() const { return to; }
 		constexpr auto size() const { return std::size_t(to - from); }
-		template<typename I> constexpr auto& operator[](I i) const
+		constexpr auto& operator[](std::size_t i) const
 		{ return constexpr_assert(i < size()), from[i]; }
 		template<typename... As> constexpr auto& emplace_back(As&&... args) &
 		{ return std::construct_at(to, std::forward<As>(args)...), *to++; }
