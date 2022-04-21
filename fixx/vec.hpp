@@ -18,14 +18,14 @@ namespace fixx {
 		constexpr auto begin() const { return from; }
 		constexpr auto end() const { return to; }
 		constexpr auto size() const { return std::size_t(to - from); }
-		constexpr auto& operator[](std::size_t i) const
-		{ return constexpr_assert(i < size()), from[i]; }
 		template<typename... As> constexpr auto& emplace_back(As&&... args) &
 		{ return std::construct_at(to, std::forward<As>(args)...), *to++; }
+		constexpr auto& operator[](std::size_t i) const
+		{ return constexpr_assert(i < size()), from[i]; }
 		template<typename U = T> constexpr auto operator==(Vec const& v) const
 		-> decltype(std::declval<U>() == std::declval<U>()) {
 			if (auto p = begin(); size() == v.size())
-				for (auto& t: v) if (*p != t) return false; else ++p;
+				for (auto&& t: v) if (*p != t) return false; else ++p;
 			return size() == v.size();
 		}
 	};
