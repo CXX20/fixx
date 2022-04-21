@@ -1,5 +1,6 @@
 #include "../fixx/vec.hpp"
 #include "../fixx/buf.hpp"
+#include <compare>
 
 namespace {
 	using fixx::Vec, fixx::operator""_c;

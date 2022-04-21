@@ -2,7 +2,6 @@
 #define FIXX_HEADER_VEC
 
 #include "core.hpp"
-#include <compare>
 #include <memory>
 
 namespace fixx {
