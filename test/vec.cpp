@@ -50,4 +50,15 @@ namespace {
 
 	struct NoCmp {};
 	static_assert(!Vec<NoCmp>{}.size(), "Vec comparison must be SFINAE-friendly");
+
+	static_assert([] {
+		fixx::Buf<fixx::Value<42>> buf{42};
+		Vec vec0{buf};
+		Vec vec1{buf};
+		vec1.emplace_back();
+		return
+			vec0 == vec0 && vec0 <=> vec0 == std::strong_ordering::equal &&
+			vec1 == vec1 && vec1 <=> vec1 == std::strong_ordering::equal &&
+			vec0 != vec1 && vec0 <=> vec1 == std::strong_ordering::less;
+	}());
 }
