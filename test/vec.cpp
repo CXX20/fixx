@@ -48,9 +48,6 @@ namespace {
 			vec != different && vec <=> different == std::strong_ordering::less;
 	}());
 
-	struct NoCmp {};
-	static_assert(!Vec<NoCmp>{}.size(), "Vec comparison must be SFINAE-friendly");
-
 	static_assert([] {
 		fixx::Buf<fixx::Value<42>> buf{42};
 		Vec vec0{buf};
@@ -61,4 +58,15 @@ namespace {
 			vec1 == vec1 && vec1 <=> vec1 == std::strong_ordering::equal &&
 			vec0 != vec1 && vec0 <=> vec1 == std::strong_ordering::less;
 	}());
+
+	struct NoCmp {};
+	struct OnlyEq { constexpr auto operator==(OnlyEq) const { return true; } };
+	struct OnlySpaceship {
+		constexpr auto operator<=>(OnlySpaceship const&) const = default;
+	};
+
+	static_assert(!Vec<NoCmp>{}.size(), "Vec comparison must be SFINAE-friendly");
+	static_assert(Vec<OnlyEq>{} == Vec<OnlyEq>{});
+	static_assert(Vec<OnlySpaceship>{} <=> Vec<OnlySpaceship>{} ==
+			std::strong_ordering::equal);
 }
