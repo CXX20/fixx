@@ -12,8 +12,12 @@ namespace fixx {
 
 	public:
 		constexpr Vec() {}
-		template<typename B> constexpr Vec(B&& buf, decltype(buf.data()) = nullptr)
-		: from{std::forward<B>(buf).data()}, to{from} {}
+		template<typename B, typename R = Vec>
+		constexpr Vec(B&& buf, R&& ts = {}, decltype((ts.begin(), buf.data())) = {})
+		: from{std::forward<B>(buf).data()}, to{from} {
+			constexpr_assert(buf.size() >= ts.size());
+			for (auto&& t: ts) emplace_back(std::forward<decltype(t)>(t));
+		}
 
 		constexpr auto begin() const { return from; }
 		constexpr auto end() const { return to; }
@@ -38,7 +42,7 @@ namespace fixx {
 			return f(size(), rhs.size());
 		}
 	};
-	template<typename B> Vec(B&& buf)
+	template<typename B, typename... R> Vec(B buf, R...)
 	-> Vec<std::remove_pointer_t<decltype(buf.data())>>;
 }
 

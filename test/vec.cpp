@@ -1,9 +1,11 @@
 #include "../fixx/vec.hpp"
+#include "../fixx/arr.hpp"
 #include "../fixx/buf.hpp"
 #include <compare>
 
 namespace {
-	using fixx::Vec, fixx::operator""_c;
+	using fixx::Vec;
+	using fixx::Arr, fixx::operator""_c;
 
 	static_assert(std::is_same_v<
 			decltype(Vec{std::declval<fixx::Buf<int>&>()}), Vec<int>>);
@@ -23,8 +25,7 @@ namespace {
 
 	static_assert([] {
 		fixx::Buf<int> b{42};
-		Vec v{b};
-		v.emplace_back(13);
+		Vec v{b, Arr{13}};
 		Vec w{v};
 		return w.size() == 1 && w[0] == 13;
 	}());
@@ -36,11 +37,10 @@ namespace {
 	
 	static_assert([] {
 		fixx::Buf<float> buf1{42}, buf2{42};
-		Vec vec{buf1};
-		vec.emplace_back(1.f), vec.emplace_back(2.f);
+		Vec vec{buf1, Arr{1.f, 2.f}};
 		Vec copy{vec};
 		Vec shorter{buf2};
-		Vec different{buf2};
+		Vec different{buf2, Arr{3.f, 4.f}};
 		different.emplace_back(3.f), different.emplace_back(4.f);
 		return
 			vec == copy && vec <=> copy == std::strong_ordering::equal &&
@@ -51,8 +51,7 @@ namespace {
 	static_assert([] {
 		fixx::Buf<fixx::Value<42>> buf{42};
 		Vec vec0{buf};
-		Vec vec1{buf};
-		vec1.emplace_back();
+		Vec vec1{buf, Arr{42_c}};
 		return
 			vec0 == vec0 && vec0 <=> vec0 == std::strong_ordering::equal &&
 			vec1 == vec1 && vec1 <=> vec1 == std::strong_ordering::equal &&
