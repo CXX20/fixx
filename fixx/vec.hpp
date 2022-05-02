@@ -23,16 +23,16 @@ namespace fixx {
 		constexpr auto& operator[](std::size_t i) const
 		{ return constexpr_assert(i < size()), from[i]; }
 		template<typename U = T> constexpr auto operator==(Vec const& v) const
-		-> decltype(std::declval<U>() == std::declval<U>()) {
-			if (auto p = begin(); size() == v.size())
-				for (auto&& t: v) if (*p != t) return false; else ++p;
-			return size() == v.size();
-		}
+		-> decltype(std::declval<U>() == std::declval<U>())
+		{ return compare(v, [](auto&& a, auto&& b) { return a == b; }); }
 		template<typename U = T> constexpr auto operator<=>(Vec const& v) const
-		-> decltype(std::declval<U>() <=> std::declval<U>()) {
-			if (auto p = begin(); size() == v.size())
-				for (auto&& t: v) if (*p != t) return *p <=> t; else ++p;
-			return size() <=> v.size();
+		-> decltype(std::declval<U>() <=> std::declval<U>())
+		{ return compare(v, [](auto&& a, auto&& b) { return a <=> b; }); }
+	private:
+		template<typename F> constexpr auto compare(Vec const& rhs, F&& cmp) const {
+			if (auto p = begin(); size() == rhs.size())
+				for (auto&& t: rhs) if (*p != t) return cmp(*p, t); else ++p;
+			return decltype(cmp((*this)[0], rhs[0]))(cmp(size(), rhs.size()));
 		}
 	};
 	template<typename B> Vec(B&& buf)
