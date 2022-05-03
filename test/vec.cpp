@@ -60,12 +60,7 @@ namespace {
 
 	struct NoCmp {};
 	struct OnlyEq { constexpr auto operator==(OnlyEq) const { return true; } };
-	struct OnlySpaceship {
-		constexpr auto operator<=>(OnlySpaceship const&) const = default;
-	};
 
 	static_assert(!Vec<NoCmp>{}.size(), "Vec comparison must be SFINAE-friendly");
 	static_assert(Vec<OnlyEq>{} == Vec<OnlyEq>{});
-	static_assert(Vec<OnlySpaceship>{} <=> Vec<OnlySpaceship>{} ==
-			std::strong_ordering::equal);
 }
