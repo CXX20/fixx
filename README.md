@@ -21,6 +21,12 @@ Only the most interesting features are presented in this list. For exhaustivenes
 
 * [**core**](./fixx/core.hpp)
 
+	`fixx::Pipe`
+	* replaces messy `a(b(c(d(e, f)), g))` chaining with clear `e | (d, f) | c | (b, g) | a`,
+	* needs no in-class changes (and no empty parentheses!), unlike `e.d(f).c().b(g).a()`,
+		* just wrap your functional object: `Pipe constexpr fn = default_fn`,
+	* can still be called as usual: `pipe(arg).member` instead of `(arg | pipe).member`.
+
 	Unlike `std::integral_constant`, `fixx::Value`
 	* infers the type of its parameter,
 	* has a nice shorthand: `42_c` instead of `std::integral_constant<int, 42>{}`,
