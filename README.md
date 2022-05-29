@@ -51,6 +51,28 @@ Only the most interesting features are presented in this list. For exhaustivenes
 	Type& initialized = uninitialized.emplace(arg1, arg2);
 	```
 
+## Limitations
+
+Something is impossible/worthless to support. Here's the list of things `fixx` rejects:
+
+* `const&&`
+
+	`const` means (seemingly?) immutable. `&&` represents a value which can be mutated however you like (because it isn't needed any more). So, these two seem incompatible. Throwing this combination away allows to provide no `const&&` overloads and lifts the "don't `move` `const` values" lint to the type level.
+
+* `noexcept`
+
+	> You have to spell it three times
+
+	...but you don't want to do it even twice. While `return` is obligatory and `requires` can usually be avoided, `noexcept` hardly aids static compilation and is decided to be given up.
+
+* Exceptions while moving
+
+	Non-throwing moves are required for rollbacks to provide strong exception safety.
+
+* Some `std` interfaces
+
+	Most traits come from ancient no-`decltype` C++98/C++03 and are just useless boilerplate now. Moreover, using class specializations instead of function overloading requires reopening `namespace std` and writing code in the foreign context.
+
 ## Install and test
 
 Just download the repository and use its [`/fixx/`](./fixx/) as an include directory. Testing is performed at compile time: to run tests, simpy build the `.cpp` files in [`/test/`](./test/).
