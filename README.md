@@ -55,6 +55,10 @@ Only the most interesting features are presented in this list. For exhaustivenes
 
 Something is impossible/worthless to support. Here's the list of things `fixx` rejects:
 
+* Non-ALL_CAPS macros / foreign macros starting with `FIXX_` / single letter macros
+
+	Defending from them is impossible and pointless anyway. BTW have you seen the naming of `std` locals?
+
 * `const&&`
 
 	`const` means (seemingly?) immutable. `&&` represents a value which can be mutated however you like (because it isn't needed any more). So, these two seem incompatible. Throwing this combination away allows to provide no `const&&` overloads and lifts the "don't `move` `const` values" lint to the type level.
@@ -69,9 +73,13 @@ Something is impossible/worthless to support. Here's the list of things `fixx` r
 
 	Non-throwing moves are required for rollbacks to provide strong exception safety.
 
+* `noexcept` destructors
+
+	Even though C++ doesn't want to accept it, RAII destruction is fallible - e.g. writing to a file.
+
 * Some `std` interfaces
 
-	Most traits come from ancient no-`decltype` C++98/C++03 and are just useless boilerplate now. Moreover, using class specializations instead of function overloading requires reopening `namespace std` and writing code in the foreign context.
+	Most traits come from ancient no-`decltype` C++98/C++03 and are just useless boilerplate now. Moreover, using class specialization instead of function overloading requires reopening `namespace std` and writing code in the foreign context.
 
 ## Install and test
 
