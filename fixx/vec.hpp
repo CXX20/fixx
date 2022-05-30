@@ -12,17 +12,18 @@ namespace fixx {
 
 	public:
 		constexpr Vec() {}
-		template<typename B, typename R = Vec>
-		constexpr Vec(B&& buf, R&& ts = {}, decltype((ts.begin(), buf.data())) = {})
-		: from{std::forward<B>(buf).data()}, to{from} {
-			constexpr_assert(buf.size() >= ts.size());
-			for (auto&& t: ts) emplace_back(std::forward<decltype(t)>(t));
-		}
+		template<typename B, typename R = Vec, typename = std::void_t<
+			std::enable_if_t<!std::is_same_v<std::remove_cvref_t<B>, Vec>>,
+			decltype(new (std::declval<B>().data()) T{*std::declval<R&>().begin()})
+		>> constexpr Vec(B&& buf, R&& ts = {})
+		: from{std::forward<B>(buf).data()}, to{from}
+		{ for (auto&& t: ts) emplace_back(std::forward<decltype(t)>(t)); }
 
 		template<typename... As> constexpr auto& emplace_back(As&&... args) &
 		{ return std::construct_at(to, std::forward<As>(args)...), *to++; }
 		constexpr auto begin() const { return from; }
 		constexpr auto end() const { return to; }
+		constexpr auto data() const { return from; }
 		constexpr auto size() const { return std::size_t(to - from); }
 		constexpr auto& operator[](std::size_t i) const
 		{ return constexpr_assert(i < size()), from[i]; }
