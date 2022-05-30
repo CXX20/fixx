@@ -49,7 +49,7 @@ namespace fixx {
 	template<std::size_t i, typename T> using TupleElem =
 		typename decltype(std::remove_cvref_t<T>::typeof(value<i>))::type;
 
-	auto constexpr apply = [](auto&& fn, auto&& tuple) -> decltype(auto) {
+	Pipe constexpr apply = [](auto&& fn, auto&& tuple) -> decltype(auto) {
 		return [&]<auto... is>(std::index_sequence<is...>) -> decltype(auto) {
 			return fn(std::forward<decltype(tuple)>(tuple)[value<is>]...);
 		}(std::make_index_sequence<tuple_size<decltype(tuple)>>{});
@@ -85,20 +85,19 @@ namespace fixx::_tuple {
 	template<typename E, typename T> struct ElemAlias { E elem; T type; };
 	template<typename E, typename T> ElemAlias(E&&, T) -> ElemAlias<E&&, T>;
 	
-	template<typename T, std::size_t... is>
-	constexpr auto to_aliases(T&& tuple, std::index_sequence<is...>) {
-		return Tuple{ElemAlias{
-				std::forward<T>(tuple)[value<is>], type<TupleElem<is, T>>}...};
-	}
+	Pipe constexpr to_aliases =
+		[]<typename T, std::size_t... is>(T&& tuple, std::index_sequence<is...>) {
+			return Tuple{ElemAlias{
+					std::forward<T>(tuple)[value<is>], type<TupleElem<is, T>>}...};
+		};
 }
 namespace fixx {
-	auto constexpr tuple_cat = []<typename... Ts>(Ts&&... tuples) {
-		auto const aliases = (... + _tuple::to_aliases(
-				std::forward<Ts>(tuples), std::make_index_sequence<tuple_size<Ts>>{}));
-		return apply([](auto&&... aliases) {
+	Pipe constexpr tuple_cat = []<typename... Ts>(Ts&&... tuples) {
+		return [](auto&&... aliases) {
 			return Tuple<typename decltype(aliases.type)::type...>{
 					std::forward<decltype(aliases.elem)>(aliases.elem)...};
-		}, aliases);
+		} | (apply, (... + _tuple::to_aliases(
+				std::forward<Ts>(tuples), std::make_index_sequence<tuple_size<Ts>>{})));
 	};
 }
 
