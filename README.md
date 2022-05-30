@@ -67,7 +67,7 @@ Something is impossible/worthless to support. Here's the list of things `fixx` r
 
 	> You have to spell it three times
 
-	...but you don't want to do it even twice. While `return` is obligatory and `requires` can usually be avoided, `noexcept` hardly aids static compilation and is decided to be given up.
+	...but you don't want to do it even twice. While `return` is obligatory and `requires` can usually be avoided, `noexcept` hardly aids static compilation and punishes mistakes with `std::terminate`, so it is decided to be given up.
 
 * Exceptions while moving
 
