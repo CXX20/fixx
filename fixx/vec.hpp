@@ -19,20 +19,20 @@ namespace fixx {
 			for (auto&& t: ts) emplace_back(std::forward<decltype(t)>(t));
 		}
 
+		template<typename... As> constexpr auto& emplace_back(As&&... args) &
+		{ return std::construct_at(to, std::forward<As>(args)...), *to++; }
 		constexpr auto begin() const { return from; }
 		constexpr auto end() const { return to; }
 		constexpr auto size() const { return std::size_t(to - from); }
-		template<typename... As> constexpr auto& emplace_back(As&&... args) &
-		{ return std::construct_at(to, std::forward<As>(args)...), *to++; }
 		constexpr auto& operator[](std::size_t i) const
 		{ return constexpr_assert(i < size()), from[i]; }
 		template<typename U = T, std::void_t<
-			decltype(std::declval<U>() == std::declval<U>())
-		>* = nullptr> constexpr auto operator==(Vec const& v) const
+				decltype(std::declval<U>() == std::declval<U>())>* = nullptr>
+		constexpr auto operator==(Vec const& v) const
 		{ return compare(v, [](auto&& a, auto&& b) { return a == b; }); }
 		template<typename U = T, std::void_t<
-			decltype(std::declval<U>() <=> std::declval<U>())
-		>* = nullptr> constexpr auto operator<=>(Vec const& v) const
+				decltype(std::declval<U>() <=> std::declval<U>())>* = nullptr>
+		constexpr auto operator<=>(Vec const& v) const
 		{ return compare(v, [](auto&& a, auto&& b) { return a <=> b; }); }
 	private:
 		template<typename F> constexpr auto compare(Vec const& rhs, F&& f) const
