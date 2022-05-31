@@ -12,10 +12,15 @@ namespace fixx {
 
 	public:
 		constexpr Vec() {}
-		template<typename B, typename R = Vec, typename = std::void_t<
-			std::enable_if_t<!std::is_same_v<std::remove_cvref_t<B>, Vec>>,
-			decltype(new (std::declval<B>().data()) T{*std::declval<R&>().begin()})
-		>> constexpr Vec(B&& buf, R&& ts = {})
+		template<
+			typename B,
+			typename R = std::initializer_list<
+				std::remove_reference_t<decltype(*std::declval<B>().data())>
+			>, std::void_t<
+				std::enable_if_t<!std::is_same_v<std::remove_cvref_t<B>, Vec>>,
+				decltype(new (std::declval<B>().data()) T{*std::declval<R&>().begin()})
+			>* = nullptr
+		> constexpr Vec(B&& buf, R&& ts = {})
 		: from{std::forward<B>(buf).data()}, to{from}
 		{ for (auto&& t: ts) emplace_back(std::forward<decltype(t)>(t)); }
 
@@ -44,6 +49,8 @@ namespace fixx {
 		}
 	};
 	template<typename B, typename... R> Vec(B buf, R...)
+	-> Vec<std::remove_pointer_t<decltype(buf.data())>>;
+	template<typename B, typename T> Vec(B buf, std::initializer_list<T>)
 	-> Vec<std::remove_pointer_t<decltype(buf.data())>>;
 }
 
