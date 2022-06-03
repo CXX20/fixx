@@ -79,7 +79,9 @@ Something is impossible/worthless to support. Here's the list of things `fixx` r
 
 * Some `std` interfaces
 
-	Most traits come from ancient no-`decltype` C++98/C++03 and are just useless boilerplate now. Moreover, using class specialization instead of function overloading requires reopening `namespace std` and writing code in the foreign context.
+	Most `std` traits come from ancient no-`decltype` C++98/C++03 and are just useless boilerplate now. Moreover, using class specialization instead of function overloading requires reopening `namespace std` and writing code in the foreign context.
+
+	Besides, a lot of typical member functions - e.g. `empty`, `swap` or `value` - can be implemented only once as a free function template.
 
 ## Install and test
 
