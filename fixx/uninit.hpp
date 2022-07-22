@@ -6,54 +6,30 @@
 
 namespace fixx {
 	template<typename T> class Uninit {
-		union { T rt, *ct{}; };
+		struct NoCtor { [[no_unique_address]] T t; };
+		union Ctor {
+			[[no_unique_address]] std::in_place_t _{};
+			[[no_unique_address]] T t;
+			
+			constexpr Ctor() {}
+			constexpr ~Ctor() requires std::is_trivially_destructible_v<T> = default;
+			constexpr ~Ctor() requires (!std::is_trivially_destructible_v<T>) {}
+		};
+		[[no_unique_address]]
+		std::conditional_t<std::is_trivially_constructible_v<T>, NoCtor, Ctor> s;
 	
-		static constexpr auto is_ct() { return std::is_constant_evaluated(); }
-
-		constexpr auto ptr() const { return is_ct() ? ct : std::addressof(rt); }
-		constexpr auto ptr() { return is_ct() ? ct : std::addressof(rt); }
-
 	public:
-		constexpr Uninit() { if (is_ct()) ct = std::allocator<T>{}.allocate(1); }
-		Uninit(Uninit&&) = delete;
-		constexpr ~Uninit() { if (is_ct()) std::allocator<T>{}.deallocate(ct, 1); }
-
-		template<typename... As> constexpr auto& emplace(As&&... args) &
-		{ return *std::construct_at(ptr(), std::forward<As>(args)...); }
-
-		constexpr auto& reset() & { return std::destroy_at(ptr()), *this; }
-
-		constexpr auto& operator*() const& { return *ptr(); }
-		constexpr auto& operator*() & { return *ptr(); }
+		template<typename... As> constexpr auto& emplace(As&&... as) &
+		{ return *std::construct_at(std::addressof(s.t), std::forward<As>(as)...); }
+		constexpr auto& reset() & { return s.t.~T(), *this; }
+		
+		constexpr auto& operator*() const& { return s.t; }
+		constexpr auto& operator*() & { return s.t; }
 		auto operator*() && = delete;
 
-		constexpr auto operator->() const& { return ptr(); }
-		constexpr auto operator->() & { return ptr(); }
+		constexpr auto operator->() const& { return std::addressof(s.t); }
+		constexpr auto operator->() & { return std::addressof(s.t); }
 		auto operator->() && = delete;
-	};
-	template<typename T, std::size_t n> class Uninit<T[n]> {
-		union { T rt[n], *ct{}; };
-
-		static constexpr auto is_ct() { return std::is_constant_evaluated(); }
-	public:
-		static constexpr auto size() { return value<n>; }
-
-		constexpr Uninit() { if (is_ct()) ct = std::allocator<T>{}.allocate(n); }
-		Uninit(Uninit&&) = delete;
-		constexpr ~Uninit() { if (is_ct()) std::allocator<T>{}.deallocate(ct, n); }
-
-		template<typename I, typename... As>
-		constexpr auto& emplace(I idx, As&&... args) & {
-			return constexpr_assert(idx < size()),
-				*std::construct_at(data() + idx, std::forward<As>(args)...);
-		}
-
-		template<typename I> constexpr auto& erase(I i) &
-		{ return constexpr_assert(i < size()), std::destroy_at(data() + i), *this; }
-
-		constexpr auto data() const& { return is_ct() ? ct : rt; }
-		constexpr auto data() & { return is_ct() ? ct : rt; }
-		auto data() && = delete;
 	};
 }
 
